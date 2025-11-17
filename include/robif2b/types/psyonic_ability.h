@@ -24,6 +24,8 @@ struct robif2b_ability_comm {
     enum robif2b_ctrl_mode ctrl_mode;
 };
 
+struct robif2b_ah_wrapper;
+
 struct robif2b_psyonic_ability_nbx
 {
     struct robif2b_psyonic_ability_config conf;
@@ -32,7 +34,9 @@ struct robif2b_psyonic_ability_nbx
     float cur[6];
     uint16_t fsr[30];
     bool* success;
-    struct robif2b_ability_comm *comm;
+    struct robif2b_ability_comm* comm;
+    // Internal
+    struct robif2b_ah_wrapper* ah_wrapper;
 };
 
 

@@ -7,7 +7,13 @@
 #include "wrapper.h"
 
 
-static std::optional<AHWrapper> robif2b_ah_wrapper;
+#define CMD_SIZE 6*sizeof(float)
+#define FSR_SIZE 30*sizeof(uint16_t)
+
+
+struct robif2b_ah_wrapper {
+    AHWrapper impl;
+};
 
 Command robif2b_to_ability_type(enum robif2b_ctrl_mode ctrl_mode) {
     switch (ctrl_mode) {
@@ -25,28 +31,30 @@ Command robif2b_to_ability_type(enum robif2b_ctrl_mode ctrl_mode) {
 }
 
 void robif2b_psyonic_ability_configure(struct robif2b_psyonic_ability_nbx *b) {
-    robif2b_ah_wrapper.emplace(b->conf.hand_addr, b->conf.baud_rate);
+    b->ah_wrapper = new robif2b_ah_wrapper {
+        .impl = AHWrapper(b->conf.hand_addr, b->conf.baud_rate)
+    };
     *b->success = true;
 }
 
 void robif2b_psyonic_ability_start(struct robif2b_psyonic_ability_nbx *b) {
-    assert(robif2b_ah_wrapper);
+    assert(b->ah_wrapper);
 
-    robif2b_ah_wrapper->connect(b->conf.port);
+    int ret = b->ah_wrapper->impl.connect(b->conf.port);
 
-    *b->success = true;
+    *b->success = ret == 0;
 }
 
 void robif2b_psyonic_ability_update(struct robif2b_psyonic_ability_nbx *b) {
-    assert(robif2b_ah_wrapper);
+    assert(b->ah_wrapper);
     assert(b->comm);
 
     // wrap command for ah_wrapper
     std::array<float, 6> cmd {};
-    std::memcpy(cmd.data(), b->comm->cmd, 6*sizeof(float));
+    std::memcpy(cmd.data(), b->comm->cmd, CMD_SIZE);
     const Command cmd_type { robif2b_to_ability_type(b->comm->ctrl_mode) };
 
-    int ret = robif2b_ah_wrapper->read_write_once(cmd, cmd_type, 0);
+    int ret = b->ah_wrapper->impl.read_write_once(cmd, cmd_type, 0);
     // stop on failed read/write
     if (ret != 0) {
         *b->success = false;
@@ -54,16 +62,16 @@ void robif2b_psyonic_ability_update(struct robif2b_psyonic_ability_nbx *b) {
     }
 
     // copy feedback from ah_wrapper hand into robif2b struct
-    std::memcpy(b->pos, robif2b_ah_wrapper->hand.pos.data(), 6*sizeof(float));
-    std::memcpy(b->vel, robif2b_ah_wrapper->hand.vel.data(), 6*sizeof(float));
-    std::memcpy(b->cur, robif2b_ah_wrapper->hand.cur.data(), 6*sizeof(float));
-    std::memcpy(b->fsr, robif2b_ah_wrapper->hand.fsr.data(), 30*sizeof(uint16_t));
+    std::memcpy(b->pos, b->ah_wrapper->impl.hand.pos.data(), CMD_SIZE);
+    std::memcpy(b->vel, b->ah_wrapper->impl.hand.vel.data(), CMD_SIZE);
+    std::memcpy(b->cur, b->ah_wrapper->impl.hand.cur.data(), CMD_SIZE);
+    std::memcpy(b->fsr, b->ah_wrapper->impl.hand.fsr.data(), FSR_SIZE);
 
     *b->success = true;
 }
 
 void robif2b_psyonic_ability_shutdown(struct robif2b_psyonic_ability_nbx *b) {
-    assert(robif2b_ah_wrapper);
+    assert(b->ah_wrapper);
 
-    robif2b_ah_wrapper.reset();
+    delete b->ah_wrapper;
 }

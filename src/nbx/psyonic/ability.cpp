@@ -38,7 +38,7 @@ void robif2b_psyonic_ability_configure(struct robif2b_psyonic_ability_nbx *b) {
 }
 
 void robif2b_psyonic_ability_start(struct robif2b_psyonic_ability_nbx *b) {
-    assert(b->ah_wrapper);
+    assert("Ability Hand has not been configured." && b->ah_wrapper);
 
     int ret = b->ah_wrapper->impl.connect(b->conf.port);
 
@@ -46,8 +46,8 @@ void robif2b_psyonic_ability_start(struct robif2b_psyonic_ability_nbx *b) {
 }
 
 void robif2b_psyonic_ability_update(struct robif2b_psyonic_ability_nbx *b) {
-    assert(b->ah_wrapper);
-    assert(b->comm);
+    assert("Ability Hand has not been configured." && b->ah_wrapper);
+    assert("Command is not initialized." && b->comm);
 
     // wrap command for ah_wrapper
     std::array<float, 6> cmd {};
@@ -71,7 +71,7 @@ void robif2b_psyonic_ability_update(struct robif2b_psyonic_ability_nbx *b) {
 }
 
 void robif2b_psyonic_ability_shutdown(struct robif2b_psyonic_ability_nbx *b) {
-    assert(b->ah_wrapper);
+    assert("Ability Hand has not been configured." && b->ah_wrapper);
 
     delete b->ah_wrapper;
 }

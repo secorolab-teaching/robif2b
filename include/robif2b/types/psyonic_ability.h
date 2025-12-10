@@ -12,16 +12,20 @@
 extern "C" {
 #endif
 
+#define ROBIF2B_ABILITY_NR_JOINTS 6
+#define ROBIF2B_ABILITY_NR_FSR 30
+
 struct robif2b_psyonic_ability_config
 {
     const uint8_t hand_addr;
     const uint32_t baud_rate;
-    const char* port;
+    const char *port;
 };
 
-struct robif2b_ability_comm {
-    float cmd[6];
-    enum robif2b_ctrl_mode ctrl_mode;
+struct robif2b_ability_cmd {
+    float *cmd; // * NR_JOINTS
+    enum robif2b_ctrl_mode *ctrl_mode;
+    uint8_t *reply_mode;
 };
 
 struct robif2b_ah_wrapper;
@@ -29,14 +33,16 @@ struct robif2b_ah_wrapper;
 struct robif2b_psyonic_ability_nbx
 {
     struct robif2b_psyonic_ability_config conf;
-    float pos[6];
-    float vel[6];
-    float cur[6];
-    uint16_t fsr[30];
-    bool* success;
-    struct robif2b_ability_comm* comm;
+
+    struct robif2b_ability_cmd *cmd;
+    float *pos;    // * NR_JOINTS
+    float *vel;    // * NR_JOINTS
+    float *cur;    // * NR_JOINTS
+    uint16_t *fsr; // * NR_FSR
+    bool *success;
+
     // Internal
-    struct robif2b_ah_wrapper* ah_wrapper;
+    struct robif2b_ah_wrapper *ah_wrapper;
 };
 
 

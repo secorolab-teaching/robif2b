@@ -44,7 +44,7 @@ if(ENABLE_PSYONIC)
     target_link_libraries(ability_example ability)
 
     if(ENABLE_INSTALL_TARGETS)
-        set_target_properties(eddie_example PROPERTIES
+        set_target_properties(ability_example PROPERTIES
             INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}"
             INSTALL_RPATH_USE_LINK_PATH TRUE
         )

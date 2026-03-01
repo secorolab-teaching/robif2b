@@ -41,7 +41,7 @@ endif()
 
 if(ENABLE_PSYONIC)
     add_executable(ability_example ability_example.c)
-    target_link_libraries(ability_example ability)
+    target_link_libraries(ability_example ability m)
 
     if(ENABLE_INSTALL_TARGETS)
         set_target_properties(ability_example PROPERTIES

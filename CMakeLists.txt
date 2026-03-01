@@ -6,6 +6,7 @@ option(ENABLE_ETHERCAT "Build EtherCat interface" Off)
 option(ENABLE_KORTEX "Build Kinova Kortex interface" Off)
 option(ENABLE_KORTEX_API_AUTO_DOWNLOAD "Auto download Kortex API library" Off)
 option(ENABLE_KELO "Build Kelo interface" Off)
+option(ENABLE_PSYONIC "Build Psyonic Ability interface" Off)
 option(ENABLE_UBX "Build UBX blocks" Off)
 option(ENABLE_DOC "Build documentation" Off)
 option(ENABLE_INSTALL_TARGETS "Install targets" Off)
@@ -17,6 +18,7 @@ include(GNUInstallDirs)
 # The directory to which all CMake files are installed
 set(CMAKE_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
+add_subdirectory(lib)
 add_subdirectory(src)
 
 if(ENABLE_DOC)

@@ -42,3 +42,16 @@ if(ENABLE_ETHERCAT)
     endif()
   endif()
 endif()
+
+if(ENABLE_PSYONIC)
+    add_executable(ability_example ability_example.c)
+    target_link_libraries(ability_example ability m)
+
+    if(ENABLE_INSTALL_TARGETS)
+        set_target_properties(ability_example PROPERTIES
+            INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}"
+            INSTALL_RPATH_USE_LINK_PATH TRUE
+        )
+        install(TARGETS ability_example DESTINATION bin/${PROJECT_NAME})
+    endif()
+endif()

@@ -61,6 +61,7 @@
     # `ENABLE_KELO=ON` to enable Kelo drive communication
     # `ENABLE_ENABLE_KORTEX=ON` to enable Kinova Kortex drive communication
     # `ENABLE_KORTEX_API_AUTO_DOWNLOAD=ON` to download the Kortex API automatically
+    # `ENABLE_PSYONIC=ON` to enable Psyonic Ability hand communication
 
     # install the library
     make install

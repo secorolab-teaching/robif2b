@@ -1,4 +1,4 @@
-add_library(ability STATIC
+add_library(ability SHARED
   ability.cpp
 )
 
@@ -10,4 +10,12 @@ target_include_directories(ability
 
 target_link_libraries(ability
   ah_wrapper
+)
+
+install(
+  TARGETS ability
+  EXPORT ${PROJECT_NAME}-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

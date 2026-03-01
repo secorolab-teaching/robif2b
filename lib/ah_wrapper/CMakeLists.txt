@@ -13,7 +13,7 @@ elseif(UNIX)
     message(STATUS "Platform is Linux")
 endif()
 
-add_library(ah_wrapper STATIC
+add_library(ah_wrapper SHARED
     ${SERIAL_LIB}
     src/api.cpp
     src/ppp.cpp
@@ -25,7 +25,16 @@ add_library(ah_wrapper STATIC
 
 target_include_directories(ah_wrapper
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+install(
+  TARGETS ah_wrapper
+  EXPORT ${PROJECT_NAME}-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
